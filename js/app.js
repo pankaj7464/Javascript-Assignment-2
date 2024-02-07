@@ -25,6 +25,7 @@ addBtn.style.display = "block";
 employeeForm.addEventListener("submit", function (e) {
   // Prevent default form submission behavior
   e.preventDefault();
+
   // Get values from form inputs
   const name = document.getElementById("name").value;
   const address = document.getElementById("address").value;
@@ -38,9 +39,6 @@ employeeForm.addEventListener("submit", function (e) {
 
     // Add the new employee object to the employees array
     employees.push(employee);
-
-    // Save employees to local storage
-    saveEmployeesToLocalStorage();
 
     // Display the updated list of employees
     displayEmployees();
@@ -80,9 +78,9 @@ function editEmployee(index) {
   // Get the employee object at the specified index in the employees array
   const employee = employees[index];
 
-  // Hide the edit button
+  // Hide the Add button
   editBtn.style.display = "block";
-  editBtn.style.backgroundColor="gray";
+  editBtn.style.backgroundColor = "gray";
   addBtn.style.display = "none";
 
   // Set the form inputs to the details of the selected employee
@@ -102,9 +100,6 @@ function editEmployee(index) {
       inputs[3].value
     );
 
-    // Save employees to local storage
-    saveEmployeesToLocalStorage();
-
     // Display the updated list of employees
     displayEmployees();
 
@@ -117,19 +112,5 @@ function editEmployee(index) {
   };
 }
 
-// Function to save employees to local storage
-function saveEmployeesToLocalStorage() {
-  localStorage.setItem("employees", JSON.stringify(employees));
-}
-
-// Function to load employees from local storage
-function loadEmployeesFromLocalStorage() {
-  const storedEmployees = localStorage.getItem("employees");
-  if (storedEmployees) {
-    employees = JSON.parse(storedEmployees);
-    displayEmployees();
-  }
-}
-
-// Display the initial list of employees when the page loads
-loadEmployeesFromLocalStorage();
+// Initially load the employee table in dom
+displayEmployees();
