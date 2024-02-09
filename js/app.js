@@ -21,6 +21,7 @@ const addBtn = document.getElementById("add-btn");
 editBtn.style.display = "none";
 addBtn.style.display = "block";
 
+
 // Event listener for form submission
 employeeForm.addEventListener("submit", function (e) {
   // Prevent default form submission behavior
@@ -43,7 +44,7 @@ employeeForm.addEventListener("submit", function (e) {
       if (existingEmployeeWithEditedId) {
         // Display error message
         alert("An employee with the same Employee ID already exists.");
-        return; // Stop further execution
+        return;
       }
       // Update the details of the selected employee with the values from the form inputs
       employees[index] = new Employee(
