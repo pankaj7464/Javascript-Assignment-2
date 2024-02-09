@@ -34,17 +34,47 @@ employeeForm.addEventListener("submit", function (e) {
 
   // Check if all fields are filled
   if (name && address && employeeId && designation) {
-    // Create a new Employee object with the provided details
-    const employee = new Employee(name, address, employeeId, designation);
-
-    // Add the new employee object to the employees array
-    employees.push(employee);
-
+    if (editBtn.style.display === "block") {
+      // Editing an existing employee
+      const index = editBtn.dataset.index;
+      // Check if the edited employee ID conflicts with any existing employee ID
+      const editedEmployeeId = employeeId;
+      const existingEmployeeWithEditedId = employees.find((emp, i) => i !== parseInt(index) && emp.employeeId === editedEmployeeId);
+      if (existingEmployeeWithEditedId) {
+        // Display error message
+        alert("An employee with the same Employee ID already exists.");
+        return; // Stop further execution
+      }
+      // Update the details of the selected employee with the values from the form inputs
+      employees[index] = new Employee(
+        name,
+        address,
+        employeeId,
+        designation
+      );
+      // Reset the form inputs
+      employeeForm.reset();
+      // Hide the edit button
+      editBtn.style.display = "none";
+      addBtn.style.display = "block";
+    } else {
+      // Adding a new employee
+      // Check if an employee with the same employee ID already exists
+      const existingEmployee = employees.find(emp => emp.employeeId === employeeId);
+      if (existingEmployee) {
+        // Display error message
+        alert("An employee with the same Employee ID already exists.");
+        return; // Stop further execution
+      }
+      // Create a new Employee object with the provided details
+      const employee = new Employee(name, address, employeeId, designation);
+      // Add the new employee object to the employees array
+      employees.push(employee);
+      // Reset the form inputs
+      employeeForm.reset();
+    }
     // Display the updated list of employees
     displayEmployees();
-
-    // Reset the form inputs
-    employeeForm.reset();
   } else {
     // If any field is empty, show an alert message
     alert("Please fill in all fields");
@@ -62,12 +92,12 @@ function displayEmployees() {
     const row = document.createElement("tr");
     // Set the inner HTML content of the row with employee details and an edit button
     row.innerHTML = `
-            <td>${employee.name}</td>
-            <td>${employee.address}</td>
-            <td>${employee.employeeId}</td>
-            <td>${employee.designation}</td>
-            <td><button onclick="editEmployee(${index})">Edit</button></td>
-          `;
+      <td>${employee.name}</td>
+      <td>${employee.address}</td>
+      <td>${employee.employeeId}</td>
+      <td>${employee.designation}</td>
+      <td><button onclick="editEmployee(${index})">Edit</button></td>
+    `;
     // Append the row to the employee list table
     employeeList.appendChild(row);
   });
@@ -78,9 +108,8 @@ function editEmployee(index) {
   // Get the employee object at the specified index in the employees array
   const employee = employees[index];
 
-  // Hide the Add button
+  // Show the Edit button
   editBtn.style.display = "block";
-  editBtn.style.backgroundColor = "gray";
   addBtn.style.display = "none";
 
   // Set the form inputs to the details of the selected employee
@@ -90,27 +119,14 @@ function editEmployee(index) {
   inputs[2].value = employee.employeeId;
   inputs[3].value = employee.designation;
 
+  // Set data-index attribute to the edit button to store the index of the employee being edited
+  editBtn.dataset.index = index;
+
   // Add an event listener to the edit button to save the changes when user click save button
   editBtn.onclick = function () {
-    // Update the details of the selected employee with the values from the form inputs
-    employees[index] = new Employee(
-      inputs[0].value,
-      inputs[1].value,
-      inputs[2].value,
-      inputs[3].value
-    );
-
-    // Display the updated list of employees
-    displayEmployees();
-
-    // Reset the form inputs
-    employeeForm.reset();
-
-    // Hide the edit button
-    editBtn.style.display = "none";
-    addBtn.style.display = "block";
+    employeeForm.dispatchEvent(new Event("submit"));
   };
 }
 
-// Initially load the employee table in dom
+// Initially load the employee table in DOM
 displayEmployees();
